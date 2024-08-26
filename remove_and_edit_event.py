@@ -5,9 +5,10 @@ from typing import Optional
 # function return removes event, otherwise returns None
 def remove_event(id_to_remove: int, automatic: bool = False) -> Optional[dict]:
     
-    check = confirmation()
-    if not check:
-        return None
+    if not automatic:
+        check = confirmation()
+        if not check:
+            return None
         
 
     # the event is removed
@@ -43,6 +44,8 @@ def remove_event(id_to_remove: int, automatic: bool = False) -> Optional[dict]:
         return removed_row[0]
         
 
+
+
 # to do sth, user have to confirm it by rewriting code e.g. '111', code to rewriting is generate automatically
 # return True, when entered password is correct, otherwise return False
 def confirmation() -> bool:
@@ -73,10 +76,8 @@ def done_undone(id_to_change):
         rows[id_to_change-1]['State'] = '0' if rows[id_to_change-1]['State'] == '1' else '1'
         # filling csv
         with open('events.csv', mode = 'w', newline = '') as outfile:
-            try:
-                fieldnames = rows[0].keys()
-            except:
-                pass
+            
+            fieldnames = rows[0].keys()
 
             csv_writer = csv.DictWriter(outfile, fieldnames = fieldnames)
             
@@ -85,6 +86,10 @@ def done_undone(id_to_change):
             csv_writer.writerows(rows)
 
     return rows[id_to_change-1]['State']
+
+
+
+
 
 def data_to_class(data):
     print(data)
@@ -106,3 +111,4 @@ def data_to_class(data):
 # print(tab)
 if __name__ == "__main__":
     done_undone(1)
+    done_undone(2)
