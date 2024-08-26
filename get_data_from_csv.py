@@ -1,16 +1,17 @@
 import csv
 from datetime import datetime
 from remove_and_edit_event import remove_event
+from typing import Optional
 
-# function returns table of data if exists, otherwise returns 0
-def get_data():
+# function returns table of data if exists, otherwise returns None
+def get_data() -> Optional[list[dict]]:
     with open ('events.csv', mode = 'r') as file:
         csv_reader = csv.DictReader(file)
-        rows = [row for row in csv_reader]
+        rows: list[dict] = [row for row in csv_reader]
 
     # return 0 if data does not exist
     if rows == []:
-         return 0
+         return None
     
     # change type of some data
     for row in rows:
@@ -19,7 +20,7 @@ def get_data():
         
 
     # sort data by date
-    sorted_rows_by_date = sorted(rows, key=lambda x:x['Date'])
+    sorted_rows_by_date: list[dict] = sorted(rows, key=lambda x:x['Date'])
     
     # add new index to events
     i = 1
@@ -30,7 +31,7 @@ def get_data():
 
     # update events in csv file
     with open('events.csv', mode = 'w', newline = '') as outfile:
-                fieldnames = rows[0].keys()
+                fieldnames: list[str] = rows[0].keys()
                 csv_writer = csv.DictWriter(outfile, fieldnames = fieldnames)
                 
                 csv_writer.writeheader()

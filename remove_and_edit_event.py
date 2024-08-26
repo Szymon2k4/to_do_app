@@ -6,7 +6,7 @@ from typing import Optional
 def remove_event(id_to_remove: int, automatic: bool = False) -> Optional[dict]:
     
     if not automatic:
-        check = confirmation()
+        check: bool = confirmation()
         if not check:
             return None
         
@@ -14,9 +14,9 @@ def remove_event(id_to_remove: int, automatic: bool = False) -> Optional[dict]:
     # the event is removed
     with open('events.csv', mode = 'r') as infile:
         csv_reader = csv.DictReader(infile)
-        rows_n = [row for row in csv_reader] 
-        rows = [row for row in rows_n if int(row['ID']) != id_to_remove]
-        removed_row = [row for row in rows_n if int(row['ID']) == id_to_remove]
+        rows_n: list[dict] = [row for row in csv_reader] 
+        rows: list[dict] = [row for row in rows_n if int(row['ID']) != id_to_remove]
+        removed_row: list[dict] = [row for row in rows_n if int(row['ID']) == id_to_remove]
 
         # if specified event does not exist, program returns None
         if removed_row == []:
@@ -26,10 +26,8 @@ def remove_event(id_to_remove: int, automatic: bool = False) -> Optional[dict]:
 
         # removing event
         with open('events.csv', mode = 'w', newline = '') as outfile:
-            try:
-                fieldnames = rows_n[0].keys()
-            except:
-                pass
+            
+            fieldnames: list[str] = rows_n[0].keys()
 
             csv_writer = csv.DictWriter(outfile, fieldnames = fieldnames)
             
@@ -76,7 +74,7 @@ def done_undone(id_to_change):
         rows[id_to_change-1]['State'] = '0' if rows[id_to_change-1]['State'] == '1' else '1'
         # filling csv
         with open('events.csv', mode = 'w', newline = '') as outfile:
-            
+
             fieldnames = rows[0].keys()
 
             csv_writer = csv.DictWriter(outfile, fieldnames = fieldnames)

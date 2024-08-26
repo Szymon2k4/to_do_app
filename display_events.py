@@ -4,12 +4,12 @@ def display_all_events(change = True):
     rows = get_data()
     print('')
     if (change):
-        print("ID      NAME                              DATE              TIME          DAY_OF_WEEK    DAYS         STATE")
+        print("ID  NAME                              DATE              TIME          DAY_OF_WEEK    DAYS         STATE")
         for row in rows:
-            print(f"{str(row['ID']).ljust(2)} ||  {row['Name'].ljust(30)}||  {str(row['Date'])[:10].ljust(16)} {str(row['Date'])[10:16].ljust(10)} ||  {row['Day_of_week'].ljust(11)} || {str(row["Difference"]).ljust(5)}        {'done' if row['State'] == '1' else 'not done'}")
+            print(f"{str(row['ID']).ljust(2)}  {row['Name'].ljust(30)}||  {str(row['Date'])[:10].ljust(16)} {str(row['Date'])[10:16].ljust(10)} ||  {row['Day_of_week'].ljust(11)} || {str(row["Difference"]).ljust(5)}        {'done' if row['State'] == '1' else 'not done'}")
     else:
-        print(" TYPE      NAME                              DATE              TIME          DAY_OF_WEEK    DAYS")
+        print(" NAME                              DATE              TIME          DAY_OF_WEEK    DAYS")
         for row in rows:
-            print(f" {row['Type'].ljust(6)}||  {row['Name'].ljust(30)}||  {str(row['Date'])[:10].ljust(16)} {str(row['Date'])[10:16].ljust(10)} ||  {row['Day_of_week'].ljust(11)} || {str(row["Difference"]).ljust(5)}")
+            print(f" {row['Name'].ljust(30)}||  {str(row['Date'])[:10].ljust(16)} {str(row['Date'])[10:16].ljust(10)} ||  {row['Day_of_week'].ljust(11)} || {str(row["Difference"]).ljust(5)}")
 
 display_all_events()
