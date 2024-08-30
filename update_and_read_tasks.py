@@ -3,43 +3,45 @@ from datetime import datetime
 from typing import Optional
 from random import randint
 
-
 #get data from csv file
-def read(file_name: str) -> Optional[list[dict]]:
+#returns None if data not exists, otherwise returns parsing* data
+def read_and_parse_data(file_name: str, parse = True) -> Optional[list[dict]]:
     with open (file_name, mode = 'r') as file:
         csv_reader: csv.DictReader = csv.DictReader(file)
-        rows: list[dict] = [row for row in csv_reader]
+        data: list[dict] = [row for row in csv_reader]
 
     # return 0 if data does not exist
-    if rows == []:
+    if data == []:
          return None
-    return rows
+    
+    #data parsing
+    if parse:
+        for row in data:
+            row['Date'] = datetime.strptime(row['Date'], "%Y-%m-%d %H:%M:%S")
+            row['ID'] = int(row['ID'])
 
-
-def parse_data(data: list[dict]) -> list[dict]:
-    for row in data:
-        row['Date'] = datetime.strptime(row['Date'], "%Y-%m-%d %H:%M:%S")
-        row['ID'] = int(row['ID'])
+    return data
         
-        
-
+# sort data by their date and add indexes, 1 - the earliest one etc. 
+# always returns data
+#CHANGE NEEDED
+def sort_and_add_index(data: Optional[list[dict]]) -> Optional[list[dict]]:
+    #checks if data exists
+    if data == None:
+        return None
     # sort data by date
-    parsing_data: list[dict] = sorted(data, key=lambda x:x['Date'])
+    sorted_data: list[dict] = sorted(data, key=lambda x:x['Date'])
     
     # add new index to events
     i = 1
-    for row in parsing_data:
+    for row in sorted_data:
         row['ID'] = i
         i +=1
     
-    return parsing_data
+    return sorted_data
 
-def read_and_parse_data(file_name: str) -> Optional[list[dict]]:
-    data = read(file_name)
-    data = parse_data(data)
-    return data
-
-
+#writes data to csv
+#returns None
 def write(file_name: str, data: list[dict]) -> None:
     with open(file_name, mode = 'w', newline = '') as outfile:
         fieldnames: list[str] = data[0].keys()
@@ -48,23 +50,32 @@ def write(file_name: str, data: list[dict]) -> None:
         csv_writer.writeheader()
         csv_writer.writerows(data)
 
+def update_csvfile(file_name: str) -> Optional[list[dict]]:
+    file_data = read_and_parse_data('tasks.csv')
 
+    correct_data = sort_and_add_index(file_data)
+    if correct_data != None:
+        write('tasks.csv', correct_data)
+        return correct_data
+    return None
+
+# removes choosen task
+#return None : wrong key, data doesnt exist, task doesnt exist
 def remove_task(id_to_remove: int, file_name: str) -> Optional[dict]:
-
+    #to avoid accidental mistakes
     if not confirmation():
         return None
-
-    if read(file_name) == None:
-        return None
     
-    data = read(file_name)
+    data = update_csvfile(file_name)
     if data == None:
         return None
 
     update_data = [row for row in data if int(row['ID']) != id_to_remove]
     removed_task = [row for row in data if int(row['ID']) == id_to_remove]
 
-    write('events.csv', parse_data(update_data))
+    write(file_name, update_data)
+
+    update_csvfile(file_name)
 
     try:
         return removed_task[0]
@@ -86,55 +97,27 @@ def confirmation() -> bool:
     return True
     
      
-def automatic_deletion(file_name) -> None:
-    data = read_and_parse_data(file_name)
-
-    current_data = additional_date(data)
+def automatic_deletion(file_name) -> Optional[list[dict]]:
+    data = update_csvfile(file_name)
     tasks_to_remove: list = []
 
     if data != None:
-        for row in current_data:     
-            if int(row["Difference"]) < 0:
+        for row in data:     
+            diff: int = (row['Date'].date() - datetime.today().date()).days
+            if diff < 0:
                 tasks_to_remove.append(row['ID'])  
 
-        remove_some_tasks(tasks_to_remove, file_name)
+    update_data = [row for row in data if row['ID'] not in tasks_to_remove]
+    removed_tasks = [row for row in data if row['ID'] in tasks_to_remove]
+        
+    write(file_name, sort_and_add_index(update_data))
 
 
-def remove_some_tasks(ids_to_remove: list[int], file_name: str) -> Optional[list[dict]]:
-    read(file_name)
-    
-    data = read(file_name)
-    if data == None:
-        return None
-
-    update_data = [row for row in data if int(row['ID']) not in ids_to_remove]
-    removed_tasks = [row for row in data if int(row['ID']) in ids_to_remove]
-
-    write('events.csv', parse_data(update_data))
-
-    try:
-        return removed_tasks
-    except:
-         return None
-    
-    
 def additional_date(data: list[dict]) -> Optional[list[dict]]:
     for row in data:
         row["Day_of_week"] = row['Date'].strftime("%A")
         row["Difference"] = (row['Date'].date() - datetime.today().date()).days
-        print(row["Difference"])
     return data
-
-
-def update_csvfile(file_name) -> Optional[list[dict]]:
-    automatic_deletion('events.csv')
-    file_data = read('events.csv')
-
-    if file_data != None:
-        parsing_data = parse_data(file_data)
-        write('events.csv', parsing_data)
-        return parsing_data 
-    return None
 
 
 def get_data(file_name) -> Optional[list[dict]]:
@@ -142,8 +125,26 @@ def get_data(file_name) -> Optional[list[dict]]:
     return additional_date(data)
     
 
+# function changes the state of task; returns current state of event 
+def done_undone(id_to_change: int | list[int], file_name: str = 'tasks.csv') -> None:
+    data = update_csvfile(file_name)
+
+    if type(id_to_change) == int:
+        print(data[id_to_change]['State'])
+        data[id_to_change-1]['State'] = '1' if data[id_to_change-1]['State'] == '0' else '0'
+    else:
+        for id in id_to_change:
+            data[id-1]['State'] = '1' if data[id-1]['State'] == '0' else '0'
+
+    write(file_name, data)
+
+
+
+
 
 
 if __name__ == "__main__":
-    print(automatic_deletion('events.csv'))
-    remove_task(4, 'events.csv')
+    print(automatic_deletion('tasks.csv'))
+    # remove_task(4, 'tasks.csv')
+    done_undone(4)
+    done_undone([2,3,5])
