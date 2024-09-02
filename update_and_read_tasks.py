@@ -64,10 +64,12 @@ def update_csvfile(file_name: str) -> Optional[list[dict]]:
 def remove_task(id_to_remove: int, file_name: str) -> Optional[dict]:
     #to avoid accidental mistakes
     if not confirmation():
+        print("Wrong key, task was not delated")
         return None
     
     data = update_csvfile(file_name)
     if data == None:
+        print("Lack of data")
         return None
 
     update_data = [row for row in data if int(row['ID']) != id_to_remove]
@@ -80,6 +82,7 @@ def remove_task(id_to_remove: int, file_name: str) -> Optional[dict]:
     try:
         return removed_task[0]
     except:
+         print("This task doesn't exist")
          return None
 
 
@@ -140,11 +143,41 @@ def done_undone(id_to_change: int | list[int], file_name: str = 'tasks.csv') -> 
 
 
 
+def edit_task(id: int, key: str, update_value: str, file_name: str = 'tasks.csv') -> Optional[dict]:
+    check_key = ['name','date','description']
+    if key.lower() not in check_key:
+        
+        print(key.lower())
+        return None
+    
 
+    data = update_csvfile(file_name)
+    if data == None:
+        print("Lack of data")
+        return None
+    try:
+        match key.lower():
+            case 'name' | 'description':
+                data[id-1][key.capitalize()] = update_value
+            case 'date':
+                data[id-1][key.capitalize()] = datetime.strptime(update_value, "%Y-%m-%d %H:%M:%S")
+    except IndexError:
+        print("This task doesn't exist")
+        return None
 
+    write(file_name, data)
+    if key.lower() == 'date':
+        update_csvfile(file_name)
+
+    return data[id-1]
 
 if __name__ == "__main__":
-    print(automatic_deletion('tasks.csv'))
-    # remove_task(4, 'tasks.csv')
-    done_undone(4)
-    done_undone([2,3,5])
+    # print(automatic_deletion('tasks.csv'))
+    # # remove_task(4, 'tasks.csv')
+    # done_undone(4)
+    # done_undone([2,3,5])
+    # print(update_csvfile('tasks.csv'))
+    # edit_task(3, 'Date', '2024-02-02 00:00:00')
+    # print(edit_task(3, 'description', 'write_new_code'))
+    ...
+
