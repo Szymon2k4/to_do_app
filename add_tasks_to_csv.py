@@ -2,9 +2,9 @@ import csv
 from task_class import Task
      
 
-task = Task('raport', 2025, 3, 1, 1, 1, 'aaaaa')
+task = Task('raport', 2025, 3, 1, 'aaaaa')
 task = Task('raport_2', 2025, 2, 24)
-task = Task('my_birthday', 2025, 2, 25, )
+task = Task('my_birthday', 2025, 2, 25)
 task = Task('party', 2025, 2, 28)
 task = Task('dsc_of_pr', 2025, 3, 5)
 task = Task('meeting', 2025, 3, 4)

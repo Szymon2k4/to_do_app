@@ -17,7 +17,7 @@ def read_and_parse_data(file_name: str, parse = True) -> Optional[list[dict]]:
     #data parsing
     if parse:
         for row in data:
-            row['Date'] = datetime.strptime(row['Date'], "%Y-%m-%d %H:%M:%S")
+            row['Date'] = datetime.strptime(row['Date'], "%Y-%m-%d").date()
             row['ID'] = int(row['ID'])
 
     return data
@@ -106,7 +106,7 @@ def automatic_deletion(file_name) -> Optional[list[dict]]:
 
     if data != None:
         for row in data:     
-            diff: int = (row['Date'].date() - datetime.today().date()).days
+            diff: int = (row['Date'] - datetime.today().date()).days
             if diff < 0:
                 tasks_to_remove.append(row['ID'])  
 
@@ -119,7 +119,7 @@ def automatic_deletion(file_name) -> Optional[list[dict]]:
 def additional_date(data: list[dict]) -> Optional[list[dict]]:
     for row in data:
         row["Day_of_week"] = row['Date'].strftime("%A")
-        row["Difference"] = (row['Date'].date() - datetime.today().date()).days
+        row["Difference"] = (row['Date'] - datetime.today().date()).days
     return data
 
 
@@ -160,7 +160,7 @@ def edit_task(id: int, key: str, update_value: str, file_name: str = 'tasks.csv'
             case 'name' | 'description':
                 data[id-1][key.capitalize()] = update_value
             case 'date':
-                data[id-1][key.capitalize()] = datetime.strptime(update_value, "%Y-%m-%d %H:%M:%S")
+                data[id-1][key.capitalize()] = datetime.strptime(update_value, "%Y-%m-%d").date()
     except IndexError:
         print("This task doesn't exist")
         return None
@@ -179,5 +179,5 @@ if __name__ == "__main__":
     # print(update_csvfile('tasks.csv'))
     # edit_task(3, 'Date', '2024-02-02 00:00:00')
     # print(edit_task(3, 'description', 'write_new_code'))
-    ...
+    update_csvfile('tasks.csv')
 
