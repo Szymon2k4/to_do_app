@@ -17,7 +17,7 @@ class Manual:
 
     @staticmethod
     def help() -> None:
-        print("\n"+"*"*40)
+        print("\n"+"*"*30+" HELP "+"*"*30)
         print("This app is used for managing your tasks. With it you will never forgot what you have to do.")
         print("After '*ACTIONS*:' type name of one of the functions depening on what you want to do\n")
         print("FUNCTIONS: \n")
@@ -25,7 +25,7 @@ class Manual:
             key, value = fun
             key = key.replace('_', ' ').upper()
             print(f"{key}:  {value}")
-        print("\n"+"*"*40+"\n")
+        print("\n"+"*"*66+"\n")
     
     @staticmethod
     def introduction() -> None:

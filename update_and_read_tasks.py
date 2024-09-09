@@ -5,7 +5,7 @@ from random import randint
 
 #get data from csv file
 #returns None if data not exists, otherwise returns parsing* data
-def read_and_parse_data(file_name: str, parse = True) -> Optional[list[dict]]:
+def read_and_parse_data(file_name: str = 'tasks.csv', parse = True) -> Optional[list[dict]]:
     with open (file_name, mode = 'r') as file:
         csv_reader: csv.DictReader = csv.DictReader(file)
         data: list[dict] = [row for row in csv_reader]
@@ -62,28 +62,29 @@ def update_csvfile(file_name: str) -> Optional[list[dict]]:
 # removes choosen task
 #return None : wrong key, data doesnt exist, task doesnt exist
 def remove_task(id_to_remove: int, file_name: str) -> Optional[dict]:
-    #to avoid accidental mistakes
-    if not confirmation():
-        print("Wrong key, task was not delated")
-        return None
-    
     data = update_csvfile(file_name)
     if data == None:
-        print("Lack of data")
+        print("LACK OF DATA")
         return None
 
     update_data = [row for row in data if int(row['ID']) != id_to_remove]
     removed_task = [row for row in data if int(row['ID']) == id_to_remove]
 
+    #to avoid accidental mistakes
+    try:
+        removed_task[0]
+        if not confirmation():
+            print("\nWRONG CODE")
+            return None
+    except:
+        print("\nTHIS TASK DOESN'T EXIST")
+        return None
+    
     write(file_name, update_data)
 
     update_csvfile(file_name)
 
-    try:
-        return removed_task[0]
-    except:
-         print("This task doesn't exist")
-         return None
+    return removed_task[0]
 
 
 def confirmation() -> bool:
@@ -95,7 +96,6 @@ def confirmation() -> bool:
     pw: str = input()
 
     if qr != pw.strip():
-        print("The code is wrong. The Event has not been delated.")
         return False
     return True
     
@@ -144,16 +144,16 @@ def done_undone(id_to_change: int | list[int], file_name: str = 'tasks.csv') -> 
 
 
 def edit_task(id: int, key: str, update_value: str, file_name: str = 'tasks.csv') -> Optional[dict]:
+
     check_key = ['name','date','description']
     if key.lower() not in check_key:
-        
-        print(key.lower())
+        print("THIS KEY NOT EXISTS")
         return None
     
 
     data = update_csvfile(file_name)
     if data == None:
-        print("Lack of data")
+        print("LACK OF DATA")
         return None
     try:
         match key.lower():
