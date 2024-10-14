@@ -7,7 +7,7 @@ from typing import Optional
 from manual import Manual
 from time import sleep
 
-
+# sss
 
 class App:
     running : bool
