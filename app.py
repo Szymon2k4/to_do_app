@@ -1,5 +1,5 @@
 from typing import Dict, List
-from update_and_read_tasks import get_data, remove_task, edit_task, done_undone, read_and_parse_data
+from update_and_read_tasks import get_data, remove_task, edit_task, done_undone, read_and_parse_data, automatic_deletion
 from task_class import Task
 from datetime import datetime
 from display_tasks import display_all_tasks
@@ -35,7 +35,7 @@ class App:
                 if command in Manual.commands:
                     self.handle_command(command)
                 else:
-                    print("WRONG")
+                    print("This functionality does not exist, for more information type HELP")
             else:
                 return command
         except KeyboardInterrupt:
@@ -58,6 +58,8 @@ class App:
                 self.handle_done_undone()
             case "exit":
                 self.handle_exit()
+            case "after_deadline_remove":
+                self.handle_automatic_delection()
             case  _:
                 ...
 
@@ -176,6 +178,9 @@ class App:
 
         print("\nSTATE SUCCESSFULLY CHANGED!")
         print("\n"+"&"*66+"\n")
+    def handle_automatic_delection(self) -> None:
+        automatic_deletion('tasks.csv')
+        print("\nTASKS SUCCESSFULLY REMOVED!\n")
 
     def handle_exit(self):
         print("\nshutdown...\n")

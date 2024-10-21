@@ -133,7 +133,6 @@ def done_undone(id_to_change: int | list[int], file_name: str = 'tasks.csv') -> 
     data = update_csvfile(file_name)
 
     if type(id_to_change) == int:
-        print(data[id_to_change]['State'])
         data[id_to_change-1]['State'] = '1' if data[id_to_change-1]['State'] == '0' else '0'
     else:
         for id in id_to_change:

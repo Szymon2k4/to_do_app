@@ -1,14 +1,11 @@
 ID,Name,Date,Description,State
-1,name,2024-09-24,des,0
-2,changed_name,2024-09-27,create new files,0
-3,coding_workshops,2025-01-01,"i have to complete my project""",0
-4,my_birthday,2025-02-25,,1
-5,raport,2025-03-01,aaaaa,0
-6,party,2025-03-03,,0
-7,meeting,2025-03-04,,1
-8,dsc_of_pr,2025-03-05,,0
-9,raport_4,2025-04-01,,0
-10,nam,2025-04-04,24rrr,0
-11,attempt_1,2025-04-25,My 21 birthday,0
-12,nameeeee,2025-09-09,descrip,0
-13,nameeer,2027-08-08,ds,0
+1,coding_workshops,2025-01-01,"i have to complete my project""",0
+2,nameeeee,2025-02-02,descrip,0
+3,my_birthday,2025-02-25,,1
+4,meeting,2025-03-04,,1
+5,dsc_of_pr,2025-03-05,,0
+6,raport_4,2025-04-01,,0
+7,nam,2025-04-04,24rrr,0
+8,attempt_1,2025-04-25,My 21 birthday,0
+9,task_1,2025-05-25,ewcrcwcr,0
+10,nameeer,2027-08-08,ds,0

@@ -9,6 +9,7 @@ class Manual:
         "remove_task" : "allows user to remove selected task ",
         "edit_task" : "allows user to change features of selected event",
         "change_state" : "allows user to change state [done|undone]",
+        "after_deadline_remove": "remove all the tasks that are after the deadline",
         "exit" : " terminate app"
     }
 
